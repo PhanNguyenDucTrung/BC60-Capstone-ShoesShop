@@ -1,21 +1,27 @@
+<<<<<<< HEAD
 import { Menu, Badge, Modal, Dropdown, Space } from 'antd';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { UserOutlined } from '@ant-design/icons';
+=======
+import { Menu } from "antd";
+import { NavLink, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+>>>>>>> refs/remotes/origin/main
 
 const menuItems = [
-    {
-        key: '/',
-        label: <NavLink to='/'>Home</NavLink>,
-    },
-    { key: '/detail', label: <NavLink to='/detail'>Detail</NavLink> },
-    { key: '/cart', label: <NavLink to='/cart'>Cart</NavLink> },
-    { key: '/profile', label: <NavLink to='/profile'>Profile</NavLink> },
-    { key: '/register', label: <NavLink to='/register'>Register</NavLink> },
-    { key: '/search', label: <NavLink to='/search'>Search</NavLink> },
-    { key: '/login', label: <NavLink to='/login'>Login</NavLink> },
+  {
+    key: "/",
+    label: <NavLink to="/">Home</NavLink>,
+  },
+  { key: "/detail", label: <NavLink to="/detail">Detail</NavLink> },
+  { key: "/cart", label: <NavLink to="/cart">Cart</NavLink> },
+  { key: "/profile", label: <NavLink to="/profile">Profile</NavLink> },
+  { key: "/register", label: <NavLink to="/register">Register</NavLink> },
+  { key: "/search", label: <NavLink to="/search">Search</NavLink> },
+  { key: "/login", label: <NavLink to="/login">Login</NavLink> },
 ];
 
 const items = [
@@ -52,6 +58,7 @@ const items = [
 ];
 
 const Header = () => {
+<<<<<<< HEAD
     const token = localStorage.getItem('token');
 
     const location = useLocation();
@@ -136,6 +143,36 @@ const Header = () => {
                 items={menuItems}></Menu>
         </div>
     );
+=======
+  const location = useLocation();
+  const [selectedKeys, setSelectedKeys] = useState([]);
+
+  useEffect(() => {
+    // Extract the pathname from the current location
+    const { pathname } = location;
+
+    // Find the matching menu item key based on the pathname
+    const matchedKey = menuItems.find((item) => item.to === pathname)?.key;
+
+    // Update the selected key
+    if (matchedKey) {
+      setSelectedKeys([matchedKey]);
+    }
+  }, [location]);
+  return (
+    <>
+    <div>
+        
+    </div>
+      <Menu
+        mode="horizontal"
+        selectedKeys={selectedKeys}
+        onClick={({ key }) => setSelectedKeys([key])}
+        items={menuItems}
+      ></Menu>
+    </>
+  );
+>>>>>>> refs/remotes/origin/main
 };
 
 export default Header;
