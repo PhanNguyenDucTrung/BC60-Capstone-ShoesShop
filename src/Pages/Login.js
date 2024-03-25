@@ -1,4 +1,5 @@
-import { Alert, Button, Form, Input } from 'antd';
+import { Alert, Button, Form, Input, Result } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import React, { useState } from 'react';
 
@@ -7,15 +8,14 @@ const onFinishFailed = errorInfo => {
 };
 
 const Login = () => {
+    const navigate = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [form] = Form.useForm();
     const [message, setMessage] = useState({ text: '', type: 'success' });
     const [showAlert, setShowAlert] = useState(false);
 
     const onFinish = async values => {
         console.log('Success:', values);
-
-        // Gọi API đăng nhập
-
         try {
             const response = await axios.post('https://shop.cyberlearn.vn/api/Users/signin', values);
             console.log(response);
@@ -25,26 +25,40 @@ const Login = () => {
                 localStorage.setItem('token', JSON.stringify(response.data.content.accessToken));
                 setMessage({ text: 'Đăng nhập thành công!', type: 'success' });
                 setShowAlert(true);
-                // Waiting 1s before redirecting to home page
-                // setTimeout(() => {
-                //     window.location.href = '/';
-                // }, 1000);
+                setIsLoggedIn(true);
+
                 // Chuyển hướng về trang chủ
-                // window.location.href = '/'; // Dữ liệu redux sẽ mất khi chuyển trang
+                setTimeout(() => {
+                    navigate('/');
+                }, 2000);
             }
             // Nếu đăng nhập thất bại
-            else {
-                setMessage({ text: 'Có lỗi xảy ra.', type: 'error' });
-                setShowAlert(true);
+            else if (response.status === 404) {
+                throw new Error(response.data.message);
+                // setMessage({ text: response.message, type: 'error' });
+                // setShowAlert(true);
             }
         } catch (error) {
             console.log('Failed:', error);
-            setMessage({ text: 'Có lỗi xảy ra.', type: 'error' });
+            setMessage({ text: error.response?.data?.message || 'Đăng nhập thất bại!', type: 'error' });
             setShowAlert(true);
         }
-
-        // Lưu thông tin user xuống localStorage
     };
+
+    if (isLoggedIn) {
+        return (
+            <Result
+                status='success'
+                title='Đăng nhập thành công!'
+                subTitle='Chuyển hướng đến trang chủ trong giây lát...'
+                extra={[
+                    <Button type='primary' key='console' onClick={() => navigate('/home')}>
+                        Go Home
+                    </Button>,
+                ]}
+            />
+        );
+    }
 
     return (
         <div>
@@ -69,6 +83,7 @@ const Login = () => {
                 }}
                 style={{
                     maxWidth: 600,
+                    minHeight: '60vh',
                     margin: 'auto',
                 }}
                 initialValues={{
@@ -92,7 +107,6 @@ const Login = () => {
                     ]}>
                     <Input />
                 </Form.Item>
-
                 <Form.Item
                     label='Password'
                     name='password'
@@ -107,12 +121,23 @@ const Login = () => {
 
                 <Form.Item
                     wrapperCol={{
-                        offset: 4,
+                        offset: 15,
+                        span: 16,
+                    }}>
+                    <Link href='/forgot-password' style={{ marginLeft: '15px' }}>
+                        Quên mật khẩu?
+                    </Link>
+                </Form.Item>
+
+                <Form.Item
+                    wrapperCol={{
+                        offset: 6,
                         span: 16,
                     }}>
                     <Button type='primary' htmlType='submit'>
-                        Submit
+                        Login
                     </Button>
+                    Or <Link to='/register'>No account? Create one</Link>
                 </Form.Item>
             </Form>
         </div>

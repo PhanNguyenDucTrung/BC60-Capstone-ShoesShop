@@ -15,7 +15,9 @@ function App() {
             <Routes>
                 <Route path='' element={<MainTemplate />}>
                     <Route path='/' element={<HomePage />} />
-                    <Route path='/detail' element={<DetailPage />} />
+                    <Route path='/detail' element={<DetailPage />}>
+                        <Route path=':id' element={<DetailPage />} />
+                    </Route>
                     <Route path='/cart' element={<CartPage />} />
                     <Route path='/profile' element={<ProfilePage />} />
                     <Route path='/register' element={<RegisterPage />} />

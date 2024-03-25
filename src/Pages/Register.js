@@ -1,10 +1,8 @@
-import { Button, Form, Input, Select, Checkbox, Alert } from 'antd';
-import axios from 'axios';
+import { Button, Form, Input, Select, Checkbox, Alert, Typography } from 'antd';
 import React, { useState } from 'react';
+import { Result } from 'antd';
+import api from '../utils/config.js';
 
-// const onFinish = values => {
-//     console.log('Success:', values);
-// };
 const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
 };
@@ -15,34 +13,50 @@ const Register = () => {
     const [showAlert, setShowAlert] = useState(false);
 
     const onFinish = async values => {
-        // Gửi dữ liệu đăng ký đến server
         console.log('Received values of form: ', values);
         try {
-            const response = await axios.post('https://shop.cyberlearn.vn/api/Users/signup', values);
+            const response = await api.post('/Users/signup', values);
             console.log(response);
+
             if (response.status === 200) {
-                setMessage({ text: 'Đăng ký thành công!', type: 'success' });
+                setMessage({ text: 'Đăng ký thành công! Hãy đăng nhập để tiếp tục.', type: 'success' });
                 setShowAlert(true);
             } else {
                 setMessage({ text: 'Có lỗi xảy ra.', type: 'error' });
                 setShowAlert(true);
             }
         } catch (error) {
-            setMessage({ text: 'Có lỗi xảy ra.', type: 'error' });
-            setShowAlert(true);
+            if (error.response && error.response.status === 400) {
+                setMessage({ text: 'Email đã tồn tại.', type: 'error' });
+                setShowAlert(true);
+            } else {
+                setMessage({ text: 'Có lỗi xảy ra.', type: 'error' });
+                setShowAlert(true);
+            }
         }
-        // Gọi API đăng ký
 
-        // Nếu đăng ký thất bại
-
-        // Nếu đăng ký thành công
         form.resetFields();
-
-        // Reset form
     };
 
+    if (showAlert) {
+        return (
+            showAlert && (
+                <Result
+                    status={message.type}
+                    title={message.text}
+                    subTitle={message.type === 'success' ? 'Click the button below to login.' : 'Please try again.'}
+                    extra={[
+                        <Button type='primary' key='console'>
+                            {message.type === 'success' ? 'Login' : 'Retry'}
+                        </Button>,
+                    ]}
+                />
+            )
+        );
+    }
+
     return (
-        <div>
+        <div className='container'>
             {showAlert && (
                 <Alert
                     message={message.text}
@@ -52,6 +66,9 @@ const Register = () => {
                     onClose={() => setShowAlert(false)}
                 />
             )}
+            <Typography.Title style={{ textAlign: 'center', paddingTop: '20px' }} level={2}>
+                Đăng kí tài khoản
+            </Typography.Title>
             <Form
                 form={form}
                 name='basic'

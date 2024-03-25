@@ -1,0 +1,131 @@
+/* RESET CSS */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+a:hover {
+    color: #000;
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
+.products-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+    gap: 30px;
+    /* max-width: 1200px; */
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.product-card {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.product-wishlist {
+    position: absolute;
+    top: 7px;
+    right: 10px;
+    background-color: #fff;
+    border-radius: 50%;
+    padding: 5px;
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+.product-card img {
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.product-card h2 {
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+
+.product-card p {
+    font-size: 1rem;
+    margin: 10px 0;
+}
+
+.custom-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+    width: 40px;
+    transition: all 0.5s ease;
+}
+
+.custom-button:hover {
+    width: 100%;
+}
+
+.custom-button:hover:after {
+    margin-left: 5px;
+    content: 'Add to cart';
+}
+
+/* FOOTER CSS */
+
+.footer ul {
+    padding-left: 5px;
+}
+
+.footer a {
+    display: inline-block;
+    padding: 5px 10px;
+    padding-left: 0;
+}
+
+/* Hiệu ứng Animation cho Hover link (FOOTER)*/
+.hover-effect {
+    position: relative;
+    transition: all 0.3s ease-in-out;
+}
+
+.hover-effect::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background: #fff;
+    bottom: 0;
+    left: 0;
+    transition: width 0.3s;
+}
+
+.hover-effect:hover::after {
+    width: 100%;
+}
