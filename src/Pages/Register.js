@@ -148,6 +148,14 @@ const Register = () => {
                             required: true,
                             message: 'Please input your password!',
                         },
+                        {
+                            min: 6,
+                            message: 'Mật khẩu phải chứa ít nhất 6 ký tự!',
+                        },
+                        {
+                            pattern: /^\S*$/,
+                            message: 'Password should not contain whitespace',
+                        },
                     ]}>
                     <Input.Password />
                 </Form.Item>

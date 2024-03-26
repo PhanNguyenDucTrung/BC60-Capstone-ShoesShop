@@ -73,7 +73,7 @@ const CategorySelect = (
     const handleCategoryChange = async (value, selectedOptions) => {
         console.log(value, selectedOptions);
 
-        if (selectedOptions.length === 0) return;
+        if (!selectedOptions || selectedOptions.length === 0) return;
 
         const category = selectedOptions[selectedOptions.length - 1].value;
 

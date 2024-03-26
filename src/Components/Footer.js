@@ -1,7 +1,6 @@
-import React from 'react'
+import React from 'react';
 
 const Footer = () => {
-<<<<<<< HEAD
     return (
         <div className='bg-dark container-fluid p-5 footer'>
             <div className='row'>
@@ -82,51 +81,24 @@ const Footer = () => {
                 <div className='col-3'>
                     <h3 className='text-light'>Newsletter</h3>
                     <p className='text-light'>Subscribe to our newsletter</p>
-                    <input type='text' placeholder='Enter your email' />
-                    <button className='btn btn-primary'>Subscribe</button>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <input
+                            type='text'
+                            placeholder='Enter your email'
+                            style={{
+                                padding: '7px',
+                                flex: 1,
+                                borderRadius: '5px',
+                            }}
+                        />
+                        <button className='btn btn-primary' style={{ height: 'fit-content', marginLeft: '10px' }}>
+                            Subscribe
+                        </button>
+                    </div>
                 </div>
-                <p className='text-light text-center  col-12'>© 2021. Made with 🤦‍♂️ by me All rights reserved</p>
+                <p className='text-light text-center col-12'>© 2021. Made with 🤦‍♂️ by me All rights reserved</p>
             </div>
         </div>
     );
 };
 export default Footer;
-=======
-  return (
-    <footer class="footer">
-  <div class="footer-content">
-    <div class="footer-section">
-      <h3>GET HELP</h3>
-      <ul class="footer-links">
-        <li><a href="#" class="footer-link">Home</a></li>
-        <li><a href="#" class="footer-link">Nike</a></li>
-        <li><a href="#" class="footer-link">Adidas</a></li>
-        <li><a href="#" class="footer-link">Contact</a></li>
-      </ul>
-    </div>
-    <div class="footer-section">
-      <h3>SUPPORT</h3>
-      <ul class="footer-links">
-        <li><a href="#" class="footer-link">About</a></li>
-        <li><a href="#" class="footer-link">Contact</a></li>
-        <li><a href="#" class="footer-link">Help</a></li>
-        <li><a href="#" class="footer-link">Phone</a></li>
-      </ul>
-    </div>
-    <div class="footer-section">
-      <h3>REGISTER</h3>
-      <ul class="footer-links">
-        <li><a href="#" class="footer-link">register</a></li>
-        <li><a href="#" class="footer-link">login</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>© 2022 Cybersoft All Rights Reserved | Design Theme by Trương Tấn Khải</p>
-  </div>
-</footer>
-  )
-}
-
-export default Footer
->>>>>>> refs/remotes/origin/main

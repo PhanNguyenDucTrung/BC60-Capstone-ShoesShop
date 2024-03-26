@@ -1,27 +1,22 @@
-<<<<<<< HEAD
-import { Menu, Badge, Modal, Dropdown, Space } from 'antd';
+import { Menu, Button, Badge, Modal, Dropdown, Space } from 'antd';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { UserOutlined } from '@ant-design/icons';
-=======
-import { Menu } from "antd";
-import { NavLink, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
->>>>>>> refs/remotes/origin/main
 
 const menuItems = [
-  {
-    key: "/",
-    label: <NavLink to="/">Home</NavLink>,
-  },
-  { key: "/detail", label: <NavLink to="/detail">Detail</NavLink> },
-  { key: "/cart", label: <NavLink to="/cart">Cart</NavLink> },
-  { key: "/profile", label: <NavLink to="/profile">Profile</NavLink> },
-  { key: "/register", label: <NavLink to="/register">Register</NavLink> },
-  { key: "/search", label: <NavLink to="/search">Search</NavLink> },
-  { key: "/login", label: <NavLink to="/login">Login</NavLink> },
+    {
+        key: '/',
+        label: <NavLink to='/'>Home</NavLink>,
+    },
+    { key: '/detail', label: <NavLink to='/detail'>Detail</NavLink> },
+    { key: '/cart', label: <NavLink to='/cart'>Cart</NavLink> },
+    { key: '/profile', label: <NavLink to='/profile'>Profile</NavLink> },
+    { key: '/register', label: <NavLink to='/register'>Register</NavLink> },
+    { key: '/search', label: <NavLink to='/search'>Search</NavLink> },
+    { key: '/store', label: <NavLink to='/store'>Store</NavLink> },
+    { key: '/login', label: <NavLink to='/login'>Login</NavLink> },
 ];
 
 const items = [
@@ -53,33 +48,28 @@ const items = [
     {
         key: '4',
         danger: true,
-        label: <NavLink to='/'>Logout</NavLink>,
+        label: <span>Logout</span>,
+        onClick: () => {
+            Modal.confirm({
+                title: 'Do you want to logout?',
+                onOk: () => {
+                    localStorage.removeItem('token');
+                    window.location.reload();
+                },
+            });
+        },
     },
 ];
 
 const Header = () => {
-<<<<<<< HEAD
     const token = localStorage.getItem('token');
 
     const location = useLocation();
 
     const [selectedKeys, setSelectedKeys] = useState([]);
     const cart = useSelector(state => state.cart);
+    const username = useSelector(state => state.profile.user?.name);
     console.log('cart:', cart);
-
-    const [isModalVisible, setIsModalVisible] = useState(false);
-
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
-
-    const handleOk = () => {
-        setIsModalVisible(false);
-    };
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
 
     useEffect(() => {
         const { pathname } = location;
@@ -89,17 +79,22 @@ const Header = () => {
             return;
         }
 
+        if (pathname === '' || pathname === '/') {
+            setSelectedKeys(['/']);
+            return;
+        }
+
         const matchedKey = menuItems.find(item => item.to === pathname)?.key;
 
         if (matchedKey) {
             setSelectedKeys([matchedKey]);
         }
-    }, [location]);
+    }, [location, location.pathname]);
     return (
         <div>
             <div style={{ padding: '12px 16px', display: 'flex', justifyContent: 'space-between' }}>
                 <h3 style={{}}>
-                    <NavLink href='/'>
+                    <NavLink to='/'>
                         <span
                             style={{
                                 fontSize: '20px',
@@ -120,19 +115,27 @@ const Header = () => {
 
                 <div>
                     {token && (
-                        <Dropdown
-                            menu={{
-                                items,
-                            }}>
-                            <a className='ant-dropdown-link' href='/' onClick={e => e.preventDefault()}>
-                                <Space>
-                                    <UserOutlined style={{ fontSize: '24px', marginLeft: '10px' }} />
-                                </Space>
-                            </a>
-                        </Dropdown>
+                        <>
+                            <span>Hello, {username}</span>
+                            <Dropdown
+                                menu={{
+                                    items,
+                                }}>
+                                <a className='ant-dropdown-link' href='/' onClick={e => e.preventDefault()}>
+                                    <Space>
+                                        <UserOutlined style={{ fontSize: '24px', marginLeft: '10px' }} />
+                                    </Space>
+                                </a>
+                            </Dropdown>
+                        </>
                     )}
                     <Badge count={0} showZero={true}>
-                        <ShoppingCartOutlined style={{ fontSize: '24px' }} />
+                        <NavLink
+                            to={{
+                                pathname: '/cart',
+                            }}>
+                            <ShoppingCartOutlined style={{ fontSize: '24px' }} />
+                        </NavLink>
                     </Badge>
                 </div>
             </div>
@@ -143,36 +146,6 @@ const Header = () => {
                 items={menuItems}></Menu>
         </div>
     );
-=======
-  const location = useLocation();
-  const [selectedKeys, setSelectedKeys] = useState([]);
-
-  useEffect(() => {
-    // Extract the pathname from the current location
-    const { pathname } = location;
-
-    // Find the matching menu item key based on the pathname
-    const matchedKey = menuItems.find((item) => item.to === pathname)?.key;
-
-    // Update the selected key
-    if (matchedKey) {
-      setSelectedKeys([matchedKey]);
-    }
-  }, [location]);
-  return (
-    <>
-    <div>
-        
-    </div>
-      <Menu
-        mode="horizontal"
-        selectedKeys={selectedKeys}
-        onClick={({ key }) => setSelectedKeys([key])}
-        items={menuItems}
-      ></Menu>
-    </>
-  );
->>>>>>> refs/remotes/origin/main
 };
 
 export default Header;

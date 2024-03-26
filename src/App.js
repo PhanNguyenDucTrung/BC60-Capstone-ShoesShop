@@ -8,6 +8,7 @@ import LoginPage from './Pages/Login.js';
 import ProfilePage from './Pages/Profile.js';
 import RegisterPage from './Pages/Register.js';
 import SearchPage from './Pages/Search.js';
+import StorePage from './Pages/Store.js';
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                     <Route path='/profile' element={<ProfilePage />} />
                     <Route path='/register' element={<RegisterPage />} />
                     <Route path='/search' element={<SearchPage />} />
+                    <Route path='/store' element={<StorePage />} />
                     <Route path='/login' element={<LoginPage />} />
                 </Route>
             </Routes>

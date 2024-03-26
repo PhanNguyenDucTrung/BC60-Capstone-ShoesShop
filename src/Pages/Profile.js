@@ -7,9 +7,12 @@ import { useNavigate } from 'react-router-dom';
 import ProductItem from '../Components/ProductItem.js';
 
 import dataOrders from './productOrders.json';
+import api from '../utils/config.js';
+import { useDispatch } from 'react-redux';
+import { setProfile } from '../redux/reducers/profileSlice.js';
 
-console.log(dataOrders);
-// import api from '../utils/config.js';
+console.log('Phake data json', dataOrders);
+
 const { TabPane } = Tabs;
 const columns = [
     { title: 'ID', dataIndex: 'id', key: 'id' },
@@ -51,6 +54,7 @@ const columns = [
 const Profile = () => {
     const [user, setUser] = useState(null);
     const [form] = Form.useForm();
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [favoriteProducts, setFavoriteProducts] = useState([]); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -87,28 +91,28 @@ const Profile = () => {
         // Call API to get user info
         async function fetchData() {
             try {
-                const response = await axios({
+                const response = await api({
                     method: 'POST',
-                    url: 'https://shop.cyberlearn.vn/api/Users/getProfile',
-                    headers: {
-                        Authorization: `Bearer ${JSON.parse(token)}`,
-                    },
+                    url: '/Users/getProfile',
                 });
 
-                const favoriteProducts = await axios({
+                const favoriteProducts = await api({
                     method: 'GET',
-                    url: 'https://shop.cyberlearn.vn/api/Users/getproductfavorite',
-                    headers: {
-                        Authorization: `Bearer ${JSON.parse(token)}`,
-                    },
+                    url: '/Users/getproductfavorite',
                 });
                 console.log('Favorite Products:', favoriteProducts.data.content);
 
                 setFavoriteProducts(favoriteProducts.data.content.productsFavorite);
-
                 setUser(response.data.content);
-                form.setFieldsValue(response.data.content);
 
+                dispatch(
+                    setProfile({
+                        user: response.data.content,
+                        favoriteProducts: favoriteProducts.data.content.productsFavorite,
+                    })
+                );
+
+                form.setFieldsValue(response.data.content);
                 console.log('User:', response.data.content);
 
                 if (response.status === 200) {
@@ -125,19 +129,12 @@ const Profile = () => {
     }, []);
 
     const onFinish = async values => {
-        const token = localStorage.getItem('token');
-
         console.log('Received values of form: ', values);
         try {
-            const response = await axios({
+            const response = await api({
                 method: 'POST',
-                url: 'https://shop.cyberlearn.vn/api/Users/updateProfile',
-
+                url: '/Users/updateProfile',
                 data: values,
-
-                headers: {
-                    Authorization: `Bearer ${JSON.parse(token)}`,
-                },
             });
             console.log('Profile updated successfully:', response.data);
             if (response.status === 200) {
