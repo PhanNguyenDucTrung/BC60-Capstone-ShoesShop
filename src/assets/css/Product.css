@@ -157,3 +157,49 @@ input {
 .hover-effect:hover::after {
     width: 100%;
 }
+.des{
+    margin-left: 30px;
+}
+
+/*Detail*/
+.btnSize{
+    height: 40px;
+    width: 40px;
+    background-color: gray;
+    border: none;
+    font-size: 20px;
+    font-weight: 500;
+    margin: 5px;
+
+}
+.d_price{
+    font-size: 30px;
+    color: red;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+
+.btnChange{
+    height: 40px;
+    width: 40px;
+    font-size: 25px;
+    border: none;
+    background-color: #6987f4;
+}
+.btnAddToCart{
+    background: linear-gradient(270deg, rgba(62, 32, 248, 0.9) 5.14%, #D017EE 89.71%);
+    color: white;
+    height: 50px;
+    width: 150px;
+    font-weight:500;
+    border: none;
+    border-radius: 5px;
+}
+.number{
+    font-size: 20px;
+    margin: 10px;
+}
+.card{
+    cursor: pointer;
+}

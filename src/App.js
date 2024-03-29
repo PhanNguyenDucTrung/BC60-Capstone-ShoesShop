@@ -10,6 +10,7 @@ import RegisterPage from './Pages/Register.js';
 import SearchPage from './Pages/Search.js';
 import StorePage from './Pages/Store.js';
 
+
 function App() {
     return (
         <BrowserRouter>
