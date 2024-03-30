@@ -26,15 +26,14 @@ export const { setProductAction,setProductDetailAction } = productReducer.action
 export default productReducer.reducer;
 
 // ===async thunk===
-export const getApiProductAsync = async dispatch => {
+export const getApiProductAsync = async (dispatch) => {
     const res = await http.get('api/product');
-
     const action = setProductAction(res.data.content);
     dispatch(action);
 };
 export const getApiProductDetailAsync = (id) =>{
     return async(dispatch)=>{
-        const res = await http.get(`/api/Product/getbyid?id=1`)
+        const res = await http.get(`/api/Product/getbyid?id=${id}`)
         const action = setProductDetailAction(res.data.content)
    dispatch(action)
     }
