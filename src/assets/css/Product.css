@@ -203,3 +203,14 @@ input {
 .card{
     cursor: pointer;
 }
+/*Cart*/
+.btnDlt:hover{
+    background-color: red!important;
+    color: white!important;
+}
+.btnSubmit:hover{
+   background-color: rgb(255, 136, 0)!important;
+   color: white!important;
+   border: none;
+ 
+}

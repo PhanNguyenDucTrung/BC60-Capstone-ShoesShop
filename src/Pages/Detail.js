@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import {  getApiProductDetailAsync } from "../redux/reducers/productReducer";
 import { addToCart } from "../redux/reducers/cartSlice";
+import AlertModal from "../Components/AlertModal";
 
 const Detail = () => {
   const params = useParams();
@@ -11,6 +12,8 @@ const Detail = () => {
   const dispatch = useDispatch();
   const [selectedSize, setSelectedSize] = useState("");
   const [sizes, setSizes] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
   const navigate = useNavigate();
   
 
@@ -29,8 +32,13 @@ const Detail = () => {
         image: prodDetail.image,
       })
     );
+    setShowAlert(true);
+    setAlertMessage("Added to cart successfully!");
+    setTimeout(() => {
+      setShowAlert(false);
+      setAlertMessage("");
+    }, 3000);
   };
-
   const [quantity, setQuantity] = useState(1); 
   const increaseQuantity = () => {
     setQuantity(quantity + 1);
@@ -83,11 +91,11 @@ const Detail = () => {
               ))}
               <p className="d_price">{prodDetail.price}$</p>
               <button className="btnChange" onClick={increaseQuantity}>+</button>
-              <span class="number">{quantity}</span>
+              <span className="number">{quantity}</span>
               <button className="btnChange " onClick={decreaseQuantity}>-</button>
               <br />
               <button className="btnAddToCart mt-2" onClick={handleAddToCart}>ADD TO CART</button>
-             
+               <AlertModal visible={showAlert} message={alertMessage} onClose={() => setShowAlert(false)} />
             </div>
           </div>
         </div>

@@ -10,7 +10,7 @@ const menuItems = [
         key: '/',
         label: <NavLink to='/'>Home</NavLink>,
     },
-    { key: '/detail', label: <NavLink to='/detail'>Detail</NavLink> },
+    // { key: '/detail', label: <NavLink to='/detail'>Detail</NavLink> },
     { key: '/cart', label: <NavLink to='/cart'>Cart</NavLink> },
     { key: '/profile', label: <NavLink to='/profile'>Profile</NavLink> },
     { key: '/register', label: <NavLink to='/register'>Register</NavLink> },
