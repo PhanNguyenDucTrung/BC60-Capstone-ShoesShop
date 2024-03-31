@@ -2,16 +2,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Button, Popconfirm, Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import {
-  decreaseQuantity,
-  increaseQuantity,
-  removeFromCart,
-} from "../redux/reducers/cartSlice";
+
 
 const Cart = () => {
   const columns = [
     {
-      title: "id",
+      title: "Id",
       dataIndex: "id",
       key: "id",
     },
@@ -41,7 +37,7 @@ const Cart = () => {
       ),
     },
     {
-      title: "Img",
+      title: "Image",
       dataIndex: "img",
       key: "image",
       render: (text, record) => {
@@ -74,12 +70,12 @@ const Cart = () => {
     },
   ];
 
-  const dispatch = useDispatch();
+const dispatch = useDispatch();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [quantity, setQuantity] = useState(1);
-
+  const cartItemsFromRedux = useSelector((state) => state.cart);
+  const [cartItems, setCartItems] = useState(cartItemsFromRedux);
   const start = () => {
     setLoading(true);
     // ajax request after empty completing
@@ -89,35 +85,24 @@ const Cart = () => {
     }, 1000);
   };
 
-  const cartItems = useSelector((state) => {
-    const uniqueItems = {};
-    state.cart.forEach((item) => {
-      if (uniqueItems[item.id]) {
-        uniqueItems[item.id].quantity += item.quantity;
-      } else {
-        uniqueItems[item.id] = { ...item };
-      }
-    });
-    return Object.values(uniqueItems);
-  });
-
-  const memoizedCartItems = useMemo(() => cartItems, [cartItems]);
-
-  const handleDecrease = (record) => {
-    if (record.quantity > 1) {
-      dispatch(decreaseQuantity(record.id));
-      setQuantity((prevQuantity) => prevQuantity - 1);
-      setTotalPrice((prevTotalPrice) => prevTotalPrice - record.price);
+  useEffect(() => {
+    const cartItemsFromLocalStorage = JSON.parse(localStorage.getItem("cart")) || [];
+    if (cartItemsFromLocalStorage.length > 0) {
+      const updatedCartItems = cartItemsFromLocalStorage.map((itemFromLocalStorage) => {
+        const existingItem = cartItemsFromRedux.find((item) => item.id === itemFromLocalStorage.id);
+        if (existingItem) {
+          return {
+            ...existingItem,
+            quantity: existingItem.quantity + itemFromLocalStorage.quantity
+          };
+        } else {
+          return itemFromLocalStorage;
+        }
+      });
+      const mergedCartItems = mergeCartItems(cartItemsFromRedux, updatedCartItems);
+      setCartItems(mergedCartItems);
     }
-  };
-
-  const handleIncrease = (record) => {
-    dispatch(increaseQuantity(record.id));
-    setQuantity((prevQuantity) => prevQuantity + 1);
-    setTotalPrice((prevTotalPrice) => prevTotalPrice + record.price);
-  };
- // Lấy danh sách sản phẩm từ local storage
- const cartItem = JSON.parse(localStorage.getItem("cart")) || [];
+  }, []);
 
   useEffect(() => {
     const totalPrice = cartItems.reduce(
@@ -125,19 +110,41 @@ const Cart = () => {
       0
     );
     setTotalPrice(totalPrice);
-  }, [cartItems.length]);
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+  }, [cartItems]);
 
-  const handleRemoveFromCart = (id) => {
-    dispatch(removeFromCart(id));
-    console.log("cart",cartItems)
-
-    const updatedCartItems = cartItems.filter((item) => item.id !== id);
-    const newTotalPrice = updatedCartItems.reduce(
-      (acc, curr) => acc + curr.quantity * curr.price,
-      0
-    );
-    setTotalPrice(newTotalPrice);
+  const mergeCartItems = (reduxItems, localStorageItems) => {
+    const mergedItems = {};
+    [...reduxItems, ...localStorageItems].forEach((item) => {
+      if (mergedItems[item.id]) {
+        mergedItems[item.id].quantity += item.quantity;
+      } else {
+        mergedItems[item.id] = { ...item };
+      }
+    });
+    return Object.values(mergedItems);
   };
+
+  const handleDecrease = (recordId) => {
+    const updatedCartItems = cartItems.map((item) =>
+      item.id === recordId ? { ...item, quantity: item.quantity - 1 } : item
+    );
+    setCartItems(updatedCartItems.filter((item) => item.quantity > 0));
+  };
+
+  const handleIncrease = (recordId) => {
+    const updatedCartItems = cartItems.map((item) =>
+      item.id === recordId ? { ...item, quantity: item.quantity + 1 } : item
+    );
+    setCartItems(updatedCartItems);
+  };
+
+  const handleRemoveFromCart = (recordId) => {
+    const updatedCartItems = cartItems.filter((item) => item.id !== recordId);
+    setCartItems(updatedCartItems);
+  };
+ 
+  const memoizedCartItems = useMemo(() => cartItems, [cartItems]);
 
   const onSelectChange = (newSelectedRowKeys) => {
     setSelectedRowKeys(newSelectedRowKeys);
