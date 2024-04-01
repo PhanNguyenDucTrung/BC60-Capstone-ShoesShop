@@ -71,6 +71,14 @@ const Header = () => {
     const username = useSelector(state => state.profile.user?.name);
     console.log('cart:', cart);
 
+    const totalQuantityInCart = () => {
+        let totalQuantity = 0;
+        cart.forEach(item => {
+          totalQuantity += item.quantity;
+        });
+        return totalQuantity;
+      };
+
     useEffect(() => {
         const { pathname } = location;
 
@@ -129,7 +137,7 @@ const Header = () => {
                             </Dropdown>
                         </>
                     )}
-                    <Badge count={0} showZero={true}>
+                    <Badge count={totalQuantityInCart()} showZero={true}>
                         <NavLink
                             to={{
                                 pathname: '/cart',
