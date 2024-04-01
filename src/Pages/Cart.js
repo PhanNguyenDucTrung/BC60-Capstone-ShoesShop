@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Button, Popconfirm, Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
+import { removeFromCart } from "../redux/reducers/cartSlice";
 
 
 const Cart = () => {
@@ -76,6 +77,8 @@ const dispatch = useDispatch();
   const [totalPrice, setTotalPrice] = useState(0);
   const cartItemsFromRedux = useSelector((state) => state.cart);
   const [cartItems, setCartItems] = useState(cartItemsFromRedux);
+
+ 
   const start = () => {
     setLoading(true);
     // ajax request after empty completing
@@ -93,16 +96,15 @@ const dispatch = useDispatch();
         if (existingItem) {
           return {
             ...existingItem,
-            quantity: existingItem.quantity + itemFromLocalStorage.quantity
+            quantity: itemFromLocalStorage.quantity  // Sử dụng quantity từ localStorage
           };
         } else {
           return itemFromLocalStorage;
         }
       });
-      const mergedCartItems = mergeCartItems(cartItemsFromRedux, updatedCartItems);
-      setCartItems(mergedCartItems);
+      setCartItems(updatedCartItems);
     }
-  }, []);
+  }, [cartItemsFromRedux]);
 
   useEffect(() => {
     const totalPrice = cartItems.reduce(
@@ -112,7 +114,17 @@ const dispatch = useDispatch();
     setTotalPrice(totalPrice);
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
+  useEffect(() => {
+    const cartItemsFromLocalStorage = JSON.parse(localStorage.getItem("cart")) || [];
+    setCartItems(cartItemsFromLocalStorage);
 
+  }, [cartItemsFromRedux]);
+  useEffect(() => {
+    setCartItems(cartItemsFromRedux);
+}, [cartItemsFromRedux]);
+  // useEffect(() => {
+  //   localStorage.setItem("cart", JSON.stringify(cartItems));
+  // }, [cartItems]);
   const mergeCartItems = (reduxItems, localStorageItems) => {
     const mergedItems = {};
     [...reduxItems, ...localStorageItems].forEach((item) => {
@@ -127,22 +139,25 @@ const dispatch = useDispatch();
 
   const handleDecrease = (recordId) => {
     const updatedCartItems = cartItems.map((item) =>
-      item.id === recordId ? { ...item, quantity: item.quantity - 1 } : item
+      item.id === recordId && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
     );
-    setCartItems(updatedCartItems.filter((item) => item.quantity > 0));
-  };
+    setCartItems(updatedCartItems);
+};
 
-  const handleIncrease = (recordId) => {
+const handleIncrease = (recordId) => {
     const updatedCartItems = cartItems.map((item) =>
       item.id === recordId ? { ...item, quantity: item.quantity + 1 } : item
     );
     setCartItems(updatedCartItems);
-  };
+};
 
   const handleRemoveFromCart = (recordId) => {
-    const updatedCartItems = cartItems.filter((item) => item.id !== recordId);
-    setCartItems(updatedCartItems);
+    // const updatedCartItems = cartItems.filter((item) => item.id !== recordId);
+    // setCartItems(updatedCartItems);
+    // localStorage.setItem("cart", JSON.stringify(updatedCartItems));
+    dispatch(removeFromCart(recordId));
   };
+  
  
   const memoizedCartItems = useMemo(() => cartItems, [cartItems]);
 
