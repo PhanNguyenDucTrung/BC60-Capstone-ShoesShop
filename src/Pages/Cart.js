@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Button, Popconfirm, Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { removeFromCart } from "../redux/reducers/cartSlice";
 
 
@@ -77,6 +77,17 @@ const dispatch = useDispatch();
   const [totalPrice, setTotalPrice] = useState(0);
   const cartItemsFromRedux = useSelector((state) => state.cart);
   const [cartItems, setCartItems] = useState(cartItemsFromRedux);
+  const navigate = useNavigate();
+  const token = useSelector((state) => state.authReducer.token);
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+      alert(
+        "Vui lòng đăng nhập để sử dụng trang!!"
+      )
+    }
+  }, [navigate, token]);
 
  
   const start = () => {
