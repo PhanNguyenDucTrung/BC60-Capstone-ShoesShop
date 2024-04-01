@@ -3,6 +3,7 @@ import { Button, Popconfirm, Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { removeFromCart } from "../redux/reducers/cartSlice";
+import { Modal } from "antd";
 
 
 const Cart = () => {
@@ -60,7 +61,7 @@ const Cart = () => {
         record // Render nút Xóa
       ) => (
         <Popconfirm
-          title="Are you sure to delete this item?"
+          title="Bạn có chắc chắn muốn xóa tất cả sản phẩm được chọn?"
           onConfirm={() => handleRemoveFromCart(record.id)}
           okText="Yes"
           cancelText="No"
@@ -92,7 +93,6 @@ const dispatch = useDispatch();
  
   const start = () => {
     setLoading(true);
-    // ajax request after empty completing
     setTimeout(() => {
       setSelectedRowKeys([]);
       setLoading(false);
@@ -107,7 +107,7 @@ const dispatch = useDispatch();
         if (existingItem) {
           return {
             ...existingItem,
-            quantity: itemFromLocalStorage.quantity  // Sử dụng quantity từ localStorage
+            quantity: itemFromLocalStorage.quantity  
           };
         } else {
           return itemFromLocalStorage;
@@ -125,6 +125,7 @@ const dispatch = useDispatch();
     setTotalPrice(totalPrice);
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
+
   useEffect(() => {
     const cartItemsFromLocalStorage = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(cartItemsFromLocalStorage);
@@ -133,9 +134,7 @@ const dispatch = useDispatch();
   useEffect(() => {
     setCartItems(cartItemsFromRedux);
 }, [cartItemsFromRedux]);
-  // useEffect(() => {
-  //   localStorage.setItem("cart", JSON.stringify(cartItems));
-  // }, [cartItems]);
+
   const mergeCartItems = (reduxItems, localStorageItems) => {
     const mergedItems = {};
     [...reduxItems, ...localStorageItems].forEach((item) => {
@@ -163,13 +162,36 @@ const handleIncrease = (recordId) => {
 };
 
   const handleRemoveFromCart = (recordId) => {
-    // const updatedCartItems = cartItems.filter((item) => item.id !== recordId);
-    // setCartItems(updatedCartItems);
-    // localStorage.setItem("cart", JSON.stringify(updatedCartItems));
     dispatch(removeFromCart(recordId));
   };
   
- 
+  const handleSubmit = () => {
+    selectedRowKeys.forEach((recordId) => {
+      handleRemoveFromCart(recordId);
+    });
+    alert("Đặt hàng thành công!!!");
+
+    setSelectedRowKeys([]);
+  };
+
+  const handleDeleteAll = () => {
+    if (selectedRowKeys.length > 0) {
+      Modal.confirm({
+        title: "Xác nhận",
+        content: "Bạn có chắc chắn muốn xóa tất cả sản phẩm được chọn?",
+        onOk() {
+          selectedRowKeys.forEach((recordId) => {
+            handleRemoveFromCart(recordId);
+          });
+          setSelectedRowKeys([]);
+        },
+        onCancel() {
+        },
+      });
+    } else {
+      alert("Bạn chưa chọn sản phẩm để xóa!");
+    }
+  };
   const memoizedCartItems = useMemo(() => cartItems, [cartItems]);
 
   const onSelectChange = (newSelectedRowKeys) => {
@@ -205,7 +227,11 @@ const handleIncrease = (recordId) => {
             {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
           </span>
         </div>
-        <Button className="btnSubmit">SUBMIT ORDER</Button>
+       <div>
+       <Button className="btnSubmit" onClick={handleSubmit}>SUBMIT ORDER</Button>
+        <Button className="btnDelete" onClick={handleDeleteAll}>DELETE ALL</Button>
+       </div>
+
       </div>
       <Table
         rowSelection={rowSelection}

@@ -207,10 +207,24 @@ input {
 .btnDlt:hover{
     background-color: red!important;
     color: white!important;
+    border: none;
 }
 .btnSubmit:hover{
    background-color: rgb(255, 136, 0)!important;
    color: white!important;
    border: none;
  
+}
+.btnSubmit,
+.btnDelete {
+  margin-left: 10px;
+
+}
+.btnDelete {
+    margin-right: 10px; 
+  }
+.btnDelete:hover{
+    background-color: red!important;
+    color: white!important;
+    border: none;
 }
