@@ -1,13 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
-    user: null,
-    favoriteProducts: [],
-};
-
 const profileSlice = createSlice({
     name: 'profile',
-    initialState,
+    initialState: {
+        user: localStorage.getItem('profile') ? JSON.parse(localStorage.getItem('profile')) : {},
+        favoriteProducts: [],
+    },
+
     reducers: {
         setProfile: (state, action) => {
             state.user = action.payload.user;

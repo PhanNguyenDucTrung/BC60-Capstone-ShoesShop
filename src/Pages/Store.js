@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
+import { useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 
 const data = {
@@ -42,7 +43,20 @@ const data = {
 
 const Store = () => {
     const mapRef = useRef(null);
-
+    const [markers, setMarkers] = useState([]);
+    const handleStoreClick = store => {
+        if (mapRef.current && store.latitude && store.longtitude) {
+            const map = mapRef.current;
+            const latitude = parseFloat(store.latitude);
+            const longitude = parseFloat(store.longtitude); // Corrected the typo here
+            map.flyTo([latitude, longitude], 19);
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 100);
+        } else {
+            console.error('Invalid store object:', store);
+        }
+    };
     useEffect(() => {
         if (!mapRef.current) {
             mapRef.current = L.map('map').setView([10.771663, 106.669631], 13);
@@ -68,10 +82,48 @@ const Store = () => {
                     .openPopup();
             });
 
+            data.content.forEach(item => {
+                const marker = L.marker([parseFloat(item.latitude), parseFloat(item.longtitude)], { icon })
+                    .addTo(mapRef.current)
+                    .bindPopup(`<b>${item.name}</b><br>${item.description}`);
+                setMarkers(prevMarkers => [...prevMarkers, marker]);
+            });
+
             const group = new L.featureGroup(markers);
             mapRef.current.fitBounds(group.getBounds());
         }
-    }, [mapRef]);
+        mapRef.current.on('moveend', function handleMoveEnd() {
+            let count = 0;
+
+            // Temporarily remove the event handler
+            mapRef.current.off('moveend', handleMoveEnd);
+
+            // Close all popups first
+            markers.forEach(marker => marker.closePopup());
+
+            markers.forEach(marker => {
+                // Stop if we've already opened two popups
+                if (count >= 2) {
+                    return;
+                }
+
+                // Get the current map view
+                const bounds = mapRef.current.getBounds();
+
+                // Check if the marker is within the map view
+                if (bounds.contains(marker.getLatLng())) {
+                    // Open the marker's popup
+                    marker.openPopup();
+
+                    // Increment the counter
+                    count++;
+                }
+            });
+
+            // Add the event handler back
+            mapRef.current.on('moveend', handleMoveEnd);
+        });
+    }, [mapRef, markers]);
 
     return (
         <div style={{ display: 'flex', width: '100%', height: '600px', margin: 'auto', maxWidth: '1200px' }}>
@@ -79,9 +131,15 @@ const Store = () => {
             <div style={{ flex: '1', overflowY: 'auto' }}>
                 <ul>
                     {data.content.map((item, index) => (
-                        <li key={index}>
+                        <li key={index} onClick={() => handleStoreClick(item)}>
                             <h2>{item.name}</h2>
-                            <p>{item.description}</p>
+                            <img src={item.image} alt={item.name} width={200} />
+                            <p
+                                style={{
+                                    textTransform: 'capitalize',
+                                }}>
+                                {item.description}.
+                            </p>
                         </li>
                     ))}
                 </ul>

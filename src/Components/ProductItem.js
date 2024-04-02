@@ -90,7 +90,12 @@ const ProductItem = ({ product, liked }) => {
                 {product.price ? `$ ${product.price}` : <p className='text-center'>Amazing price for you</p>}
             </div>
 
-            <Popover content={product?.description?.length > 80 ? product.description : 'No description'}>
+            <Popover
+                content={
+                    product?.description?.length > 100
+                        ? product.description.substring(0, 100) + '...'
+                        : 'No description'
+                }>
                 <p className='description px-1'>
                     {product?.description?.length > 80
                         ? product.description.substring(0, 70) + '...'

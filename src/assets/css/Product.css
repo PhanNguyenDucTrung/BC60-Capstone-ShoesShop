@@ -26,6 +26,12 @@ input {
     border: none;
 }
 
+h1,
+h2,
+h3 {
+    text-transform: capitalize;
+}
+
 .products-list {
     display: flex;
     flex-wrap: wrap;
@@ -76,6 +82,7 @@ input {
 }
 
 .product-card h2 {
+    text-transform: capitalize;
     font-size: 1.2rem;
     margin: 10px 0;
 }
@@ -157,12 +164,12 @@ input {
 .hover-effect:hover::after {
     width: 100%;
 }
-.des{
+.des {
     margin-left: 30px;
 }
 
 /*Detail*/
-.btnSize{
+.btnSize {
     height: 40px;
     width: 40px;
     background-color: gray;
@@ -170,61 +177,57 @@ input {
     font-size: 20px;
     font-weight: 500;
     margin: 5px;
-
 }
-.d_price{
+.d_price {
     font-size: 30px;
     color: red;
     font-weight: bold;
     margin-top: 1rem;
 }
 
-
-.btnChange{
+.btnChange {
     height: 40px;
     width: 40px;
     font-size: 25px;
     border: none;
     background-color: #6987f4;
 }
-.btnAddToCart{
-    background: linear-gradient(270deg, rgba(62, 32, 248, 0.9) 5.14%, #D017EE 89.71%);
+.btnAddToCart {
+    background: linear-gradient(270deg, rgba(62, 32, 248, 0.9) 5.14%, #d017ee 89.71%);
     color: white;
     height: 50px;
     width: 150px;
-    font-weight:500;
+    font-weight: 500;
     border: none;
     border-radius: 5px;
 }
-.number{
+.number {
     font-size: 20px;
     margin: 10px;
 }
-.card{
+.card {
     cursor: pointer;
 }
 /*Cart*/
-.btnDlt:hover{
-    background-color: red!important;
-    color: white!important;
+.btnDlt:hover {
+    background-color: red !important;
+    color: white !important;
     border: none;
 }
-.btnSubmit:hover{
-   background-color: rgb(255, 136, 0)!important;
-   color: white!important;
-   border: none;
- 
+.btnSubmit:hover {
+    background-color: rgb(255, 136, 0) !important;
+    color: white !important;
+    border: none;
 }
 .btnSubmit,
 .btnDelete {
-  margin-left: 10px;
-
+    margin-left: 10px;
 }
 .btnDelete {
-    margin-right: 10px; 
-  }
-.btnDelete:hover{
-    background-color: red!important;
-    color: white!important;
+    margin-right: 10px;
+}
+.btnDelete:hover {
+    background-color: red !important;
+    color: white !important;
     border: none;
 }

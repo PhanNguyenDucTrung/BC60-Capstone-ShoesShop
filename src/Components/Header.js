@@ -62,22 +62,26 @@ const items = [
 ];
 
 const Header = () => {
-    const token = localStorage.getItem('token');
+    // const token = localStorage.getItem('token');
+    const token = useSelector(state => state.authReducer.token);
+    console.log('token:', token);
+
+    const profile = useSelector(state => state.profile);
 
     const location = useLocation();
 
     const [selectedKeys, setSelectedKeys] = useState([]);
     const cart = useSelector(state => state.cart);
-    const username = useSelector(state => state.profile.user?.name);
+
     console.log('cart:', cart);
 
     const totalQuantityInCart = () => {
         let totalQuantity = 0;
         cart.forEach(item => {
-          totalQuantity += item.quantity;
+            totalQuantity += item.quantity;
         });
         return totalQuantity;
-      };
+    };
 
     useEffect(() => {
         const { pathname } = location;
@@ -124,7 +128,7 @@ const Header = () => {
                 <div>
                     {token && (
                         <>
-                            <span>Hello, {username}</span>
+                            <span>Hello, {profile?.user?.name}</span>
                             <Dropdown
                                 menu={{
                                     items,

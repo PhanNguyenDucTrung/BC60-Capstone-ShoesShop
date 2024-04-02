@@ -2,55 +2,55 @@
     background-color: white;
     color: black;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding-top: 40px ;
-  }
-  
-  .footer-content {
+    padding-top: 40px;
+}
+
+.footer-content {
     display: flex;
     justify-content: space-around;
     margin-bottom: 20px;
-  }
-  
-  .footer-section h3 {
+}
+
+.footer-section h3 {
     font-size: 18px;
     margin-bottom: 15px;
-  }
-  
-  .footer-links {
+}
+
+.footer-links {
     list-style: none;
     padding-left: 0;
-  }
-  
-  .footer-link {
+}
+
+.footer-link {
     color: black;
     text-decoration: none;
     display: block;
     margin-bottom: 10px;
     transition: color 0.3s ease;
-  }
-  
-  .footer-link:hover {
+}
+
+.footer-link:hover {
     color: #f1c40f;
-  }
-  
-  .footer-bottom {
+}
+
+.footer-bottom {
     height: 50px;
     text-align: center;
     border-top: 1px solid #34495e;
     padding-top: 10px;
-    background-color:#D9D9D9 ;
-  }
-  .footer-bottom p{
+    background-color: #d9d9d9;
+}
+.footer-bottom p {
     font-size: 20px;
-  }
-  
-  @media (max-width: 768px) {
+}
+
+@media (max-width: 768px) {
     .footer-content {
-      flex-direction: column;
-      align-items: center;
+        flex-direction: column;
+        align-items: center;
     }
-  
+
     .footer-section {
-      margin-bottom: 20px;
+        margin-bottom: 20px;
     }
-  }
+}

@@ -2,12 +2,17 @@ import { Alert, Button, Form, Input, Result } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import React, { useState } from 'react';
+import { setToken } from '../redux/reducers/authSlice';
+import { useDispatch } from 'react-redux';
+import api from '../utils/config';
+import { setProfile } from '../redux/reducers/profileSlice';
 
 const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
 };
 
 const Login = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [form] = Form.useForm();
@@ -22,10 +27,27 @@ const Login = () => {
 
             // Nếu đăng nhập thành công
             if (response.status === 200) {
-                localStorage.setItem('token', JSON.stringify(response.data.content.accessToken));
+                const token = response.data.content.accessToken;
+                dispatch(setToken(token));
+                localStorage.setItem('token', JSON.stringify(token));
                 setMessage({ text: 'Đăng nhập thành công!', type: 'success' });
                 setShowAlert(true);
                 setIsLoggedIn(true);
+
+                const profile = await api({
+                    method: 'POST',
+                    url: '/Users/getProfile',
+                });
+                console.log('🚀 ~ file: Login.js ~ line 64 ~ onFinish ~ profileResponse', profile);
+
+                dispatch(
+                    setProfile({
+                        user: profile.data.content,
+
+                        // favoriteProducts: favoriteProducts.data.content.productsFavorite,
+                    })
+                );
+                localStorage.setItem('profile', JSON.stringify(profile.data.content));
 
                 // Chuyển hướng về trang chủ
                 setTimeout(() => {

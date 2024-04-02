@@ -1,11 +1,10 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Form, Input, Button, Radio, Alert, Avatar, Upload, Divider, Table, Empty, Tabs } from 'antd';
-
+import { message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import ProductItem from '../Components/ProductItem.js';
-
 import dataOrders from './productOrders.json';
 import api from '../utils/config.js';
 import { useDispatch } from 'react-redux';
@@ -54,13 +53,14 @@ const columns = [
 const Profile = () => {
     const [user, setUser] = useState(null);
     const [form] = Form.useForm();
+    const [imageUrl, setImageUrl] = useState('');
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [favoriteProducts, setFavoriteProducts] = useState([]); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10
 
     // alert
-    const [message, setMessage] = useState({ text: '', type: 'success' });
+    const [alertMessage, setAlertMessage] = useState({ text: '', type: 'success' });
     const [showAlert, setShowAlert] = useState(false);
 
     const uploadProps = {
@@ -68,6 +68,31 @@ const Profile = () => {
         action: 'https://shop.cyberlearn.vn/api/Users/uploadavatar',
         headers: {
             authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        beforeUpload: file => {
+            const formData = new FormData();
+            formData.append('avatar', file);
+            formData.append('email', 'reung@gmail.com');
+
+            // Manually upload the file
+            fetch(uploadProps.action, {
+                method: 'POST',
+                headers: uploadProps.headers,
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    console.log(`${file.name} file uploaded successfully`);
+                    message.success(`Avatar uploaded successfully`);
+                })
+                .catch(error => {
+                    console.log(`${file.name} file upload failed.`);
+                    message.error(`${file.name} file upload failed.`);
+                });
+
+            // Prevent the default upload behavior
+            return false;
         },
         onChange(info) {
             if (info.file.status !== 'uploading') {
@@ -138,14 +163,15 @@ const Profile = () => {
             });
             console.log('Profile updated successfully:', response.data);
             if (response.status === 200) {
-                setMessage({ text: 'Profile updated successfully!', type: 'success' });
+                setAlertMessage({ text: 'Profile updated successfully.', type: 'success' });
+
                 setShowAlert(true);
             } else {
-                setMessage({ text: 'Failed to update profile.', type: 'error' });
+                setAlertMessage({ text: 'Failed to update profile.', type: 'error' });
                 setShowAlert(true);
             }
         } catch (error) {
-            setMessage({ text: 'Failed to update profile.', type: 'error' });
+            setAlertMessage({ text: 'Failed to update profile.', type: 'error' });
             setShowAlert(true);
             console.log('Failed to update profile:', error);
         }
