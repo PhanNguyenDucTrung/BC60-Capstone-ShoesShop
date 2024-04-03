@@ -126,7 +126,7 @@ const Header = () => {
                 </h3>
 
                 <div>
-                    {token && (
+                    {token ? (
                         <>
                             <span>Hello, {profile?.user?.name}</span>
                             <Dropdown
@@ -140,6 +140,14 @@ const Header = () => {
                                 </a>
                             </Dropdown>
                         </>
+                    ) : (
+                        <NavLink
+                            to='/login'
+                            style={{
+                                marginRight: '10px',
+                            }}>
+                            <Button type='primary'>Login</Button>
+                        </NavLink>
                     )}
                     <Badge count={totalQuantityInCart()} showZero={true}>
                         <NavLink

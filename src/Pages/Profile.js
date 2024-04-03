@@ -5,59 +5,93 @@ import { message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import ProductItem from '../Components/ProductItem.js';
-import dataOrders from './productOrders.json';
 import api from '../utils/config.js';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setProfile } from '../redux/reducers/profileSlice.js';
-
-console.log('Phake data json', dataOrders);
+import { deleteOrder } from '../redux/reducers/profileSlice.js';
 
 const { TabPane } = Tabs;
-const columns = [
-    { title: 'ID', dataIndex: 'id', key: 'id' },
-    {
-        title: 'Image',
-        dataIndex: 'img',
-        key: 'img',
-        render: (text, record) => (
-            <img src={record.image} alt={record.name} style={{ width: '50px', height: '50px' }} />
-        ),
-    },
-    {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Price',
-        dataIndex: 'price',
-        key: 'price',
-        width: '100px',
-        render: (text, record) => <span>${record?.price?.toFixed(2)}</span>,
-    },
-    {
-        title: 'Quantity',
-        dataIndex: 'quantity',
-        key: 'quantity',
-        className: 'text-center',
-        width: '300px',
-        render: (text, record) => <span>{record.quantity}</span>,
-    },
-    {
-        title: 'Total',
-        dataIndex: 'total',
-        key: 'total',
-        render: (text, record) => <span>${(record.price * record.quantity).toFixed(2)}</span>,
-    },
-];
+
 const Profile = () => {
+    const columns = [
+        { title: 'ID', dataIndex: 'id', key: 'id' },
+        {
+            title: 'Image',
+            dataIndex: 'img',
+            key: 'img',
+            render: (text, record) => (
+                <img src={record.image} alt={record.name} style={{ width: '50px', height: '50px' }} />
+            ),
+        },
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'Price',
+            dataIndex: 'price',
+            key: 'price',
+            width: '100px',
+            render: (text, record) => <span>${record?.price?.toFixed(2)}</span>,
+        },
+        {
+            title: 'Quantity',
+            dataIndex: 'quantity',
+            key: 'quantity',
+            className: 'text-center',
+            width: '300px',
+            render: (text, record) => <span>{record.quantity}</span>,
+        },
+        {
+            title: 'Total',
+            dataIndex: 'total',
+            key: 'total',
+            render: (text, record) => <span>${(record.price * record.quantity).toFixed(2)}</span>,
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            render: (text, record) => (
+                <Button type='danger' onClick={() => handleDelete(record.id)}>
+                    Delete
+                </Button>
+            ),
+        },
+    ];
+    const handleDelete = async orderId => {
+        console.log(
+            'Delete Order ID: ',
+            orderId,
+            'Type: ',
+            typeof orderId,
+            'Data: ',
+            JSON.stringify({ orderId: orderId })
+        );
+        const response = await api.post('/Users/deleteOrder', {
+            orderId: orderId,
+        });
+
+        console.log('Response:', response);
+
+        if (response.status === 200) {
+            console.log('Order deleted successfully:', response.data);
+            dispatch(deleteOrder(orderId));
+        }
+
+        if (!response.status === 200) {
+            throw new Error(`Failed to delete order ${orderId}`);
+        }
+    };
     const [user, setUser] = useState(null);
     const [form] = Form.useForm();
-    const [imageUrl, setImageUrl] = useState('');
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [favoriteProducts, setFavoriteProducts] = useState([]); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+    const ordersHistory = useSelector(state => state.profile?.user?.ordersHistory);
+    console.log('Orders History:', ordersHistory);
+
+    const [favoriteProducts, setFavoriteProducts] = useState([]);
 
     // alert
     const [alertMessage, setAlertMessage] = useState({ text: '', type: 'success' });
@@ -154,7 +188,6 @@ const Profile = () => {
     }, []);
 
     const onFinish = async values => {
-        console.log('Received values of form: ', values);
         try {
             const response = await api({
                 method: 'POST',
@@ -164,7 +197,6 @@ const Profile = () => {
             console.log('Profile updated successfully:', response.data);
             if (response.status === 200) {
                 setAlertMessage({ text: 'Profile updated successfully.', type: 'success' });
-
                 setShowAlert(true);
             } else {
                 setAlertMessage({ text: 'Failed to update profile.', type: 'error' });
@@ -175,6 +207,28 @@ const Profile = () => {
             setShowAlert(true);
             console.log('Failed to update profile:', error);
         }
+    };
+
+    // delete order history
+    const deleteAllOrders = async () => {
+        for (const order of ordersHistory) {
+            const response = await fetch('https://shop.cyberlearn.vn/api/Users/deleteOrder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    orderId: order.id,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to delete order ${order.id}`);
+            }
+        }
+
+        // After all orders are deleted, you might want to update your state
+        // setOrdersHistory([]);
     };
 
     return (
@@ -211,7 +265,7 @@ const Profile = () => {
                 <div style={{ width: 600, margin: 'auto' }}>
                     {showAlert && (
                         <Alert
-                            message={message.text}
+                            message={alertMessage.text}
                             type={message.type}
                             showIcon
                             closable
@@ -275,7 +329,6 @@ const Profile = () => {
                 </div>
             </div>
             <Divider />
-
             <Tabs defaultActiveKey='1'>
                 <TabPane tab='Favorite Products' key='1'>
                     <h2 style={{ textAlign: 'center' }}>Favorite Products</h2>
@@ -287,29 +340,33 @@ const Profile = () => {
                 </TabPane>
                 <TabPane tab='Orders' key='2'>
                     <Table
-                        rowKey='id'
+                        rowKey='key'
                         columns={columns}
-                        dataSource={dataOrders ? dataOrders : user?.orders}
-                        pagination={{
-                            pageSize: 5, // Number of items per page
-                        }}
-                        locale={{
-                            emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No Orders' />,
-                        }}
-                        expandedRowRender={record => {
-                            const date = new Date(record.time);
-                            const formattedDate = date.toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                            });
-                            return (
-                                <p style={{ margin: 0, marginLeft: '50px' }}>
-                                    Order has been placed on {formattedDate}
-                                </p>
-                            );
+                        dataSource={
+                            ordersHistory?.flatMap((order, index) => {
+                                return order.orderDetail.map((detail, detailIndex) => {
+                                    console.log('Detail:', detail);
+                                    return {
+                                        id: order.id,
+                                        key: `${order.id}-${detail.productId}-${detailIndex}`,
+                                        productId: detail.productId,
+                                        quantity: detail.quantity,
+                                        time: order.date,
+                                        isLastProduct: detailIndex === order.orderDetail.length - 1,
+                                        price: detail.price,
+                                        image: detail.image,
+                                    };
+                                });
+                            }) || []
+                        }
+                        expandable={{
+                            expandedRowRender: record =>
+                                record.isLastProduct ? (
+                                    <p>
+                                        Order date for product {record.productId}: {record.time}
+                                    </p>
+                                ) : null,
+                            rowExpandable: record => record.isLastProduct,
                         }}
                     />
                 </TabPane>

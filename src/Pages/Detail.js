@@ -108,7 +108,7 @@ const Detail = () => {
                 </div>
             </div>
             <br />
-            <h1 className='text-center my-4'>-Realate Product-</h1>
+            <h1 className='text-center my-4'>-Related Products-</h1>
             <div className='row mt-5'>
                 {prodDetail.relatedProducts?.map(prod => {
                     //optional chaining

@@ -3,22 +3,16 @@ import { Button } from 'antd';
 import { HeartOutlined, PlusOutlined, HeartFilled } from '@ant-design/icons';
 import { Modal, Popover } from 'antd';
 import { message } from 'antd';
-import axios from 'axios';
+import { addToCart } from '../redux/reducers/cartSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/config';
 
 const ProductItem = ({ product, liked }) => {
-    // sử dụng dispatch để thêm sản phẩm vào giỏ hàng
     const dispatch = useDispatch();
-
     const navigate = useNavigate();
-
-    // sử dụng state để xác định sản phẩm đã được thích hay chưa
-
+    const [quantity, setQuantity] = useState(1);
     const [isLiked, setIsLiked] = useState(liked);
-
-    const token = localStorage.getItem('token');
 
     const handleLike = async () => {
         try {
@@ -53,9 +47,6 @@ const ProductItem = ({ product, liked }) => {
             if (response.status === 200) {
                 message.success('Removed from wishlist!');
             }
-
-            console.log(response.data);
-
             setIsLiked(false);
         } catch (error) {
             if (error.response && error.response.status === 401) {
@@ -67,8 +58,6 @@ const ProductItem = ({ product, liked }) => {
             console.error(error);
         }
     };
-
-    const [quantity, setQuantity] = useState(1);
 
     const handleIncrease = () => {
         setQuantity(prevQuantity => prevQuantity + 1);
@@ -82,7 +71,7 @@ const ProductItem = ({ product, liked }) => {
     return (
         <div key={product.id} className='product-card'>
             <p className='product-wishlist' onClick={isLiked ? handleUnlike : handleLike}>
-                {isLiked ? <HeartFilled /> : <HeartOutlined />}
+                {isLiked ? <HeartFilled className='heart-icon active' /> : <HeartOutlined className='heart-icon' />}
             </p>
             <h2>{product.name}</h2>
             <img src={product.image} alt={product.name} />
@@ -93,12 +82,16 @@ const ProductItem = ({ product, liked }) => {
             <Popover
                 content={
                     product?.description?.length > 100
-                        ? product.description.substring(0, 100) + '...'
+                        ? product.description.charAt(0).toUpperCase().substring(0, 100) +
+                          product.description.slice(1, 100) +
+                          '...'
                         : 'No description'
                 }>
                 <p className='description px-1'>
                     {product?.description?.length > 80
-                        ? product.description.substring(0, 70) + '...'
+                        ? product.description.charAt(0).toUpperCase().substring(0, 70) +
+                          product.description.slice(1, 70) +
+                          '...'
                         : product.description}
                 </p>
             </Popover>
@@ -113,7 +106,13 @@ const ProductItem = ({ product, liked }) => {
                         <i className='fa-solid fa-plus'></i>
                     </button>
                 </div>
-                <Button type='primary' className='custom-button'>
+                <Button
+                    type='primary'
+                    className='custom-button'
+                    onClick={() => {
+                        dispatch(addToCart({ ...product, quantity }));
+                        message.success('Added to cart!');
+                    }}>
                     <PlusOutlined />
                 </Button>
                 <Button type='primary'>Buy Now</Button>

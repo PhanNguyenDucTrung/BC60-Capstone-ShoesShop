@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Popconfirm, Table } from 'antd';
+import { Button, Popconfirm, Table, message } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { removeFromCart } from '../redux/reducers/cartSlice';
@@ -71,12 +71,14 @@ const Cart = () => {
     ];
 
     const dispatch = useDispatch();
+
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [loading, setLoading] = useState(false);
     const [totalPrice, setTotalPrice] = useState(0);
     const cartItemsFromRedux = useSelector(state => state.cart);
     const [cartItems, setCartItems] = useState(cartItemsFromRedux);
     const navigate = useNavigate();
+    const user = useSelector(state => state.profile.user);
     const token = useSelector(state => state.authReducer.token);
     console.log(token);
     useEffect(() => {
@@ -156,13 +158,41 @@ const Cart = () => {
         dispatch(removeFromCart(recordId));
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        if (cartItems.length === 0) {
+            message.warning('Your cart is empty, please add some items to cart!');
+            return;
+        }
+
+        if (selectedRowKeys.length === 0) {
+            message.warning('Please select at least one item to submit!');
+            return;
+        }
+
         selectedRowKeys.forEach(recordId => {
             handleRemoveFromCart(recordId);
         });
-        alert('Đặt hàng thành công!!!');
 
-        setSelectedRowKeys([]);
+        const response = await fetch('https://shop.cyberlearn.vn/api/Users/order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                orderDetail: selectedRowKeys.map((recordId, index) => ({
+                    productId: recordId,
+                    quantity: cartItems[index].quantity,
+                })),
+                email: user.email,
+            }),
+        });
+
+        if (response.ok) {
+            message.success('Order submitted successfully!');
+            setSelectedRowKeys([]);
+        } else {
+            message.error('Failed to submit order');
+        }
     };
 
     const handleDeleteAll = () => {
