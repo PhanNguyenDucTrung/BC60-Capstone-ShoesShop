@@ -62,9 +62,7 @@ const items = [
 ];
 
 const Header = () => {
-    // const token = localStorage.getItem('token');
     const token = useSelector(state => state.authReducer.token);
-    console.log('token:', token);
 
     const profile = useSelector(state => state.profile);
 
@@ -72,8 +70,6 @@ const Header = () => {
 
     const [selectedKeys, setSelectedKeys] = useState([]);
     const cart = useSelector(state => state.cart);
-
-    console.log('cart:', cart);
 
     const totalQuantityInCart = () => {
         let totalQuantity = 0;

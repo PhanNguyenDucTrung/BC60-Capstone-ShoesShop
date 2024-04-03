@@ -9,6 +9,7 @@ import api from '../utils/config.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { setProfile } from '../redux/reducers/profileSlice.js';
 import { deleteOrder } from '../redux/reducers/profileSlice.js';
+import { getApiProductAsync } from '../redux/reducers/productReducer.js';
 
 const { TabPane } = Tabs;
 
@@ -27,6 +28,14 @@ const Profile = () => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
+            render: (text, record) => (
+                <span
+                    style={{
+                        textTransform: 'capitalize',
+                    }}>
+                    {record.name}
+                </span>
+            ),
         },
         {
             title: 'Price',
@@ -59,6 +68,9 @@ const Profile = () => {
             ),
         },
     ];
+
+    const products = useSelector(state => state.productReducer.arrProduct);
+
     const handleDelete = async orderId => {
         console.log(
             'Delete Order ID: ',
@@ -89,9 +101,10 @@ const Profile = () => {
     const navigate = useNavigate();
 
     const ordersHistory = useSelector(state => state.profile?.user?.ordersHistory);
-    console.log('Orders History:', ordersHistory);
 
     const [favoriteProducts, setFavoriteProducts] = useState([]);
+
+    console.log('Favorite Products:', favoriteProducts);
 
     // alert
     const [alertMessage, setAlertMessage] = useState({ text: '', type: 'success' });
@@ -142,11 +155,13 @@ const Profile = () => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        console.log(token);
 
         if (!token) {
+            console.log(token);
+            console.log('No token found. Redirecting to login page...');
             navigate('/login');
         }
+        dispatch(getApiProductAsync);
         // Call API to get user info
         async function fetchData() {
             try {
@@ -160,8 +175,13 @@ const Profile = () => {
                     url: '/Users/getproductfavorite',
                 });
                 console.log('Favorite Products:', favoriteProducts.data.content);
-
-                setFavoriteProducts(favoriteProducts.data.content.productsFavorite);
+                const updatedFavorites = favoriteProducts.data.content.productsFavorite.map(favorite => {
+                    const correspondingProduct = products.find(product => product.id === favorite.id);
+                    console.log('Favorite:', products);
+                    console.log('Corresponding Product:', correspondingProduct);
+                    return correspondingProduct ? { ...favorite, ...correspondingProduct } : favorite;
+                });
+                setFavoriteProducts(updatedFavorites);
                 setUser(response.data.content);
 
                 dispatch(
@@ -172,10 +192,9 @@ const Profile = () => {
                 );
 
                 form.setFieldsValue(response.data.content);
-                console.log('User:', response.data.content);
 
                 if (response.status === 200) {
-                    console.log('Profile:', response.data.content);
+                    // console.log('Profile:', response.data.content);
                 } else {
                     navigate('/login');
                 }
@@ -355,6 +374,7 @@ const Profile = () => {
                                         isLastProduct: detailIndex === order.orderDetail.length - 1,
                                         price: detail.price,
                                         image: detail.image,
+                                        name: detail.name,
                                     };
                                 });
                             }) || []
@@ -363,7 +383,9 @@ const Profile = () => {
                             expandedRowRender: record =>
                                 record.isLastProduct ? (
                                     <p>
-                                        Order date for product {record.productId}: {record.time}
+                                        {`Order date for product ${record.id}: ${new Date(
+                                            record.time
+                                        ).toLocaleString()}`}
                                     </p>
                                 ) : null,
                             rowExpandable: record => record.isLastProduct,

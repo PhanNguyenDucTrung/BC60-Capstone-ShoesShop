@@ -10,7 +10,6 @@ const profileSlice = createSlice({
     reducers: {
         setProfile: (state, action) => {
             state.user = action.payload.user;
-            console.log(state.user);
             state.favoriteProducts = action.payload.favoriteProducts;
         },
         deleteOrder: (state, action) => {

@@ -10,7 +10,6 @@ import _ from 'lodash';
 import '../assets/css/Product.css';
 import CategorySelect from '../Components/CategorySelect.js';
 import ProductItem from '../Components/ProductItem.js';
-import { useSelector } from 'react-redux';
 
 const suggestions = ['nike', 'adidas', 'puma', 'vans', 'converse'];
 
@@ -20,7 +19,6 @@ const Search = () => {
     const [products, setProducts] = useState([]);
     const [sortOrder, setSortOrder] = useState('asc'); // Add a state for the sort order
     const [isLoading, setIsLoading] = useState(false);
-    const cart = useSelector(state => state.cart);
 
     const fetchData = async () => {
         const url = `https://shop.cyberlearn.vn/api/Product`;
@@ -33,7 +31,6 @@ const Search = () => {
                 url: url,
             });
 
-            console.log('Data:', response.data);
             setProducts(response.data.content);
         } catch (error) {
             console.log('Failed:', error);

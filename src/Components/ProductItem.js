@@ -5,7 +5,7 @@ import { Modal, Popover } from 'antd';
 import { message } from 'antd';
 import { addToCart } from '../redux/reducers/cartSlice';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import api from '../utils/config';
 
 const ProductItem = ({ product, liked }) => {
@@ -68,6 +68,7 @@ const ProductItem = ({ product, liked }) => {
             setQuantity(prevQuantity => prevQuantity - 1);
         }
     };
+
     return (
         <div key={product.id} className='product-card'>
             <p className='product-wishlist' onClick={isLiked ? handleUnlike : handleLike}>
@@ -115,7 +116,18 @@ const ProductItem = ({ product, liked }) => {
                     }}>
                     <PlusOutlined />
                 </Button>
-                <Button type='primary'>Buy Now</Button>
+
+                <Button
+                    type='primary'
+                    onClick={() => {
+                        dispatch(addToCart({ ...product, quantity }));
+                        message.success('Added to cart!');
+                        setTimeout(() => {
+                            navigate('/cart');
+                        }, 1000);
+                    }}>
+                    Buy Now
+                </Button>
             </div>
         </div>
     );

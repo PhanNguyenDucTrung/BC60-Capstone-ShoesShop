@@ -4,7 +4,7 @@ const Footer = () => {
     return (
         <div className='bg-dark container-fluid p-5 footer mt-4'>
             <div className='row'>
-                <div className='col-3 text-light'>
+                <div className='col-md-3 text-light'>
                     <p className=''>Logo here</p>
                     <p
                         style={{
@@ -13,7 +13,7 @@ const Footer = () => {
                         The BRAND YOU NEED
                     </p>
                 </div>
-                <div className='col-3'>
+                <div className='col-md-3'>
                     <h3 className='text-light'>Information</h3>
                     <ul>
                         <li>
@@ -44,7 +44,7 @@ const Footer = () => {
                         </li>
                     </ul>
                 </div>
-                <div className='col-3'>
+                <div className='col-md-3'>
                     <h3 className='text-light'>Social Media</h3>
 
                     <ul>
@@ -78,7 +78,7 @@ const Footer = () => {
                         </li>
                     </ul>
                 </div>
-                <div className='col-3'>
+                <div className='col-md-3'>
                     <h3 className='text-light'>Newsletter</h3>
                     <p className='text-light'>Subscribe to our newsletter</p>
                     <div style={{ display: 'flex', alignItems: 'center' }}>

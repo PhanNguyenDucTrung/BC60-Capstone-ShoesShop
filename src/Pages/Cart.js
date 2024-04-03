@@ -17,7 +17,11 @@ const Cart = () => {
             dataIndex: 'name',
             key: 'name',
             render: (text, record) => {
-                return <NavLink to={`/detail/${record.id}`}> {text} </NavLink>;
+                return (
+                    <NavLink to={`/detail/${record.id}`} style={{ textTransform: 'capitalize' }}>
+                        {text}
+                    </NavLink>
+                );
             },
         },
         {
@@ -80,7 +84,7 @@ const Cart = () => {
     const navigate = useNavigate();
     const user = useSelector(state => state.profile.user);
     const token = useSelector(state => state.authReducer.token);
-    console.log(token);
+
     useEffect(() => {
         if (!token) {
             navigate('/login');
