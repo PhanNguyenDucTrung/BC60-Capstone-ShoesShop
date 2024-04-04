@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { removeFromCart } from '../redux/reducers/cartSlice';
 import { Modal } from 'antd';
+import { decreaseQuantity, increaseQuantity } from '../redux/reducers/cartSlice';
 
 const Cart = () => {
     const columns = [
@@ -148,6 +149,7 @@ const Cart = () => {
         const updatedCartItems = cartItems.map(item =>
             item.id === recordId && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
         );
+        dispatch(decreaseQuantity(recordId));
         setCartItems(updatedCartItems);
     };
 
@@ -155,6 +157,7 @@ const Cart = () => {
         const updatedCartItems = cartItems.map(item =>
             item.id === recordId ? { ...item, quantity: item.quantity + 1 } : item
         );
+        dispatch(increaseQuantity(recordId));
         setCartItems(updatedCartItems);
     };
 

@@ -72,14 +72,6 @@ const Profile = () => {
     const products = useSelector(state => state.productReducer.arrProduct);
 
     const handleDelete = async orderId => {
-        console.log(
-            'Delete Order ID: ',
-            orderId,
-            'Type: ',
-            typeof orderId,
-            'Data: ',
-            JSON.stringify({ orderId: orderId })
-        );
         const response = await api.post('/Users/deleteOrder', {
             orderId: orderId,
         });

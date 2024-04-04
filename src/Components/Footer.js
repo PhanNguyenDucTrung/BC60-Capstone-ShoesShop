@@ -81,19 +81,9 @@ const Footer = () => {
                 <div className='col-md-3'>
                     <h3 className='text-light'>Newsletter</h3>
                     <p className='text-light'>Subscribe to our newsletter</p>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <input
-                            type='text'
-                            placeholder='Enter your email'
-                            style={{
-                                padding: '7px',
-                                flex: 1,
-                                borderRadius: '5px',
-                            }}
-                        />
-                        <button className='btn btn-primary' style={{ height: 'fit-content', marginLeft: '10px' }}>
-                            Subscribe
-                        </button>
+                    <div className='subscribe-container'>
+                        <input className='subscribe-input' type='text' placeholder='Enter your email' />
+                        <button className='btn btn-primary subscribe-button'>Subscribe</button>
                     </div>
                 </div>
                 <p className='text-light text-center col-12'>© 2021. Made with 🤦‍♂️ by me All rights reserved</p>
