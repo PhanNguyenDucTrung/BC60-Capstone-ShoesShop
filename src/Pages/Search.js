@@ -123,6 +123,7 @@ const Search = () => {
                 url: url,
                 params: keyword ? { keyword } : {},
             });
+            console.log('Data:', response.data.content);
 
             setProducts(response.data.content);
             setIsLoading(false);
@@ -151,10 +152,9 @@ const Search = () => {
 
     useEffect(() => {
         const keyword = params.get('keyword');
+        console.log('keyword:', keyword);
+        fetchData(keyword);
 
-        if (keyword) {
-            fetchData(keyword);
-        }
         const category = params.get('categoryId');
         if (category) {
             const findCategory = (categories, category) => {
